@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:myFnc="http://net.buscarEnderecos/myFnc">
+
+    <ui:composition template="template.xhtml" >
+        <ui:define name="corpo">
+            <h:form id="listarEnderecosForm">
+                <p:panel>
+                    <p:dataTable id="dtEnderecos"
+                                 value="#{buscarEnderecosBean.viewHelper.lstEnderecos}"
+                                 var="endereco" 
+                                 scrollable="true" 
+                                 scrollHeight="170"
+                                 emptyMessage="Sem registros"
+                                 widgetVar="wdgEndereco"
+                                 selection="#{buscarEnderecosBean.viewHelper.enderecoSelecionado}"
+                                 rowKey="#{endereco.endereco_id}" >
+                        <f:facet name="header">
+                            <p:inputText id="globalFilter" 
+                                         onkeyup="PF('wdgEndereco').filter()" 
+                                         onkeydown="apenasNumeros(event)"
+                                         style="width: 60%; margin: 5px" />
+                        </f:facet>
+                        <p:ajax event="rowSelectRadio" update="btnAlterar btnDetalhar btnExcluir" />
+                        <p:column selectionMode="single" style="width:16px;text-align:center" />
+                        <p:column headerText="#{msgs.label_codigo}"
+                                  filterBy="#{endereco.endereco_id}"
+                                  filterMatchMode="contains"
+                                  filterStyle="display:none">
+                            <h:outputLabel value="#{endereco.endereco_id}"/>
+                        </p:column>
+                        <p:column headerText="#{msgs.label_cep}">
+                            <h:outputLabel value="#{endereco.cep}" converter="cepConverter" />
+                        </p:column>
+                        <p:column headerText="#{msgs.label_rua}">
+                            <h:outputLabel value="#{endereco.rua}"/>
+                        </p:column>
+
+                        <f:facet name="footer">
+                            <div align="right">                            
+                                <p:commandButton id="btnNovo" 
+                                                 value="#{msgs.label_novo}"
+                                                 action="#{novoEnderecoBean.inicializarNovoEndereco()}"
+                                                 style="width: 10%"
+                                                 ajax="false"/>
+
+                                <p:commandButton id="btnAlterar" 
+                                                 value="#{msgs.label_alterar}" 
+                                                 disabled="#{!buscarEnderecosBean.botoesAtivos}"
+                                                 action="#{alterarEnderecoBean.inicializarAlterarEndereco()}"
+                                                 style="width: 10%" >
+                                    <f:param value="#{buscarEnderecosBean.viewHelper.enderecoSelecionado.endereco_id}" name="ENDERECO_CODIGO" />
+                                </p:commandButton>
+
+                                <p:commandButton id="btnDetalhar" 
+                                                 value="#{msgs.label_detalhar}" 
+                                                 disabled="#{!buscarEnderecosBean.botoesAtivos}"
+                                                 action="#{detalharEnderecoBean.inicializarDetalharEndereco()}"
+                                                 style="width: 10%" >
+                                    <f:param value="#{buscarEnderecosBean.viewHelper.enderecoSelecionado.endereco_id}" name="ENDERECO_CODIGO" />
+                                </p:commandButton>
+
+                                <p:commandButton id="btnExcluir" 
+                                                 value="#{msgs.label_excluir}" 
+                                                 disabled="#{!buscarEnderecosBean.botoesAtivos}"
+                                                 onclick="PF('wdgExclusao').show()"
+                                                 style="width: 10%"/>
+                            </div>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+
+                <p:confirmDialog id="dlgExclusao" 
+                                 closeOnEscape="true" 
+                                 message="#{msgs.mensagem_tem_certeza}" 
+                                 widgetVar="wdgExclusao" 
+                                 header="#{msgs.label_exclusao}" >
+                    <p:commandButton value="#{msgs.label_sim}" 
+                                     actionListener="#{buscarEnderecosBean.excluirEndereco}" 
+                                     action="#{buscarEnderecosBean.inicializarListar()}"
+                                     ajax="false"/>
+                    <p:commandButton value="#{msgs.label_nao}" 
+                                     onclick="PF('wdgExclusao').hide()" />
+                </p:confirmDialog>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

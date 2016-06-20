@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:composition template="template.xhtml" >
+        <ui:define name="corpo">
+            <link rel="stylesheet" type="text/css" href="css/buscarEnderecos.css"/>
+            <h:form>
+                <p:panel header="#{msgs.label_detalhar_endereco}">
+                    <h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <p:inputText id="txtCep"
+                                         value="#{detalharEnderecoBean.viewHelper.endereco.cep}"
+                                         converter="cepConverter"
+                                         readonly="true">
+                            </p:inputText>
+                        </h:panelGrid>
+
+                        <h:panelGrid columns="2">
+                            <p:inputText id="txtRua"
+                                         size="114"
+                                         value="#{detalharEnderecoBean.viewHelper.endereco.rua}"
+                                         readonly="true"/>
+                        </h:panelGrid>
+
+                        <h:panelGrid columns="2">
+                            <p:inputText id="txtNro" 
+                                         size="10"
+                                         value="#{detalharEnderecoBean.viewHelper.endereco.numero}"
+                                         readonly="true"/>
+                        </h:panelGrid>
+
+                        <h:panelGrid columns="2">
+                            <p:inputText id="txtEstado" 
+                                         size="35"
+                                         value="#{detalharEnderecoBean.viewHelper.endereco.estado}"
+                                         readonly="true"/>
+                        </h:panelGrid>
+
+                        <h:panelGrid columns="2">
+                            <p:inputText id="txtCidade" 
+                                         size="114"
+                                         value="#{detalharEnderecoBean.viewHelper.endereco.cidade}"
+                                         readonly="true"/>
+                        </h:panelGrid>
+                        <h:panelGrid>
+                            <p:inputText id="txtBairro" 
+                                         size="114"
+                                         value="#{detalharEnderecoBean.viewHelper.endereco.bairro}"
+                                         readonly="true"/>
+                        </h:panelGrid>
+
+                        <h:panelGrid>
+                            <p:inputText id="txtComplemento" 
+                                         size="40"
+                                         value="#{detalharEnderecoBean.viewHelper.endereco.complemento}"
+                                         readonly="true"/>
+                        </h:panelGrid>
+                    </h:panelGrid>
+
+                    <f:facet name="footer">
+                        <h:panelGrid columns="2" width="100%" columnClasses="coluna-esquerda, coluna-direita">
+                            <p:commandButton value="#{msgs.label_voltar}"
+                                             action="#{buscarEnderecosBean.inicializarListar()}"
+                                             immediate="true"
+                                             ajax="false"/>
+                        </h:panelGrid>
+                    </f:facet>
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

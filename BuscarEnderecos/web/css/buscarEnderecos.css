@@ -1,0 +1,13 @@
+.caixaPesquisa{
+    width: 70%;
+}
+.botaoPesquisa{
+    width: 30%;
+    padding-left: 30px
+}
+.coluna-esquerda{
+    float: left;
+}
+.coluna-direita{
+    float: right;
+}
