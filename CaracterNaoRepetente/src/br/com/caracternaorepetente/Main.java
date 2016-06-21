@@ -13,21 +13,21 @@ public class Main {
     public static void main(String[] args) {
 
         String input;
-        do{
-            input = JOptionPane.showInputDialog(null,"Forneça uma cadeia de caracteres","Caracter Repetido",JOptionPane.QUESTION_MESSAGE);
-        }while(input == null || input.trim().length() == 0);
-        
+        do {
+            input = JOptionPane.showInputDialog(null, "Forneça uma cadeia de caracteres", "Caracter Repetido", JOptionPane.QUESTION_MESSAGE);
+        } while (input == null || input.trim().length() == 0);
+
         IStream stream = new StreamImpl(input);
         IStream streamComparacao;
-        
+
         int contador = 0;
         String caracterRepetido = "";
 
-        while(stream.hasNext()){
+        while (stream.hasNext()) {
             char caracter = stream.getNext();
             streamComparacao = new StreamImpl(input);
-            while(streamComparacao.hasNext()){
-                if(caracter == streamComparacao.getNext()){
+            while (streamComparacao.hasNext()) {
+                if (caracter == streamComparacao.getNext()) {
                     contador++;
                 }
             }
@@ -37,12 +37,12 @@ public class Main {
             }
             contador = 0;
         }
-        
+
         String msg = "Todos os caracteres se repetem";
-        if(caracterRepetido.length() > 0){
+        if (caracterRepetido.length() > 0) {
             msg = caracterRepetido;
         }
         JOptionPane.showMessageDialog(null, msg, "Caracter Repetido", JOptionPane.INFORMATION_MESSAGE);
-        
+
     }
 }
