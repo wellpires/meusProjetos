@@ -32,7 +32,7 @@ public class JPADao {
     public static void gravar(Object entidade) throws Exception {
         try {
             iniciarGerenciador();
-
+            
             tx = manager.getTransaction();
             tx.begin();
             manager.persist(entidade);
@@ -50,6 +50,8 @@ public class JPADao {
         try {
             iniciarGerenciador();
             return manager.find(classe, Long.parseLong(codigo.toString()));
+        } catch(Exception e){
+            throw new Exception(e);
         } finally {
             manager.close();
         }
@@ -76,6 +78,8 @@ public class JPADao {
         try {
             iniciarGerenciador();
             return manager.createQuery("SELECT e FROM " + classe.getSimpleName() + " e").getResultList();
+        }catch(Exception e){
+            throw new Exception(e);
         } finally {
             manager.close();
         }
@@ -91,6 +95,9 @@ public class JPADao {
             manager.merge(objetoAtualizado);
 
             tx.commit();
+        }catch(Exception e){
+            tx.rollback();
+            throw new Exception(e);
         } finally {
             manager.close();
         }
@@ -102,10 +109,12 @@ public class JPADao {
             iniciarGerenciador();
             tx = manager.getTransaction();
             tx.begin();
-            Object endereco = buscarPeloCodigo(objeto.getClass(), ((Endereco) objeto).getEndereco_id());
+            Object endereco = manager.find(objeto.getClass(), Long.parseLong(((Endereco) objeto).getEndereco_id().toString()));
             manager.remove(endereco);
-
             tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw new Exception(e);
         } finally {
             manager.close();
         }
