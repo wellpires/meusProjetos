@@ -10,6 +10,7 @@
     <ui:composition template="template.xhtml" >
         <ui:define name="corpo">
             <h:form id="listarEnderecosForm">
+                <p:growl id="grMensagem" redisplay="false" autoUpdate="true" globalOnly="true" showDetail="true" />
                 <p:panel>
                     <p:dataTable id="dtEnderecos"
                                  value="#{buscarEnderecosBean.viewHelper.lstEnderecos}"
@@ -21,7 +22,8 @@
                                  selection="#{buscarEnderecosBean.viewHelper.enderecoSelecionado}"
                                  rowKey="#{endereco.endereco_id}" >
                         <f:facet name="header">
-                            <p:inputText id="globalFilter" 
+                            <p:inputText id="globalFilter"
+                                         placeholder="o que você busca?"
                                          onkeyup="PF('wdgEndereco').filter()" 
                                          onkeydown="apenasNumeros(event)"
                                          style="width: 60%; margin: 5px" />
@@ -83,6 +85,7 @@
                     <p:commandButton value="#{msgs.label_sim}" 
                                      actionListener="#{buscarEnderecosBean.excluirEndereco}" 
                                      action="#{buscarEnderecosBean.inicializarListar()}"
+                                     update="grMensagem"
                                      ajax="false"/>
                     <p:commandButton value="#{msgs.label_nao}" 
                                      onclick="PF('wdgExclusao').hide()" />

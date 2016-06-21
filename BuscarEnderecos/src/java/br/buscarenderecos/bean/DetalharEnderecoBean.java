@@ -21,31 +21,37 @@ import javax.faces.context.FacesContext;
 @RequestScoped
 @ManagedBean
 public class DetalharEnderecoBean implements Serializable {
+
     private static final long serialVersionUID = 1L;
-    
+
     private DetalharEnderecoViewHelper viewHelper = null;
     private ConsumirWS consumirWS = null;
-    
-    @PostConstruct
-    public void inicializar(){
+
+    public void inicializar() {
         try {
             this.viewHelper = new DetalharEnderecoViewHelper();
             this.viewHelper.inicializar();
             String cep = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("ENDERECO_CODIGO");
             viewHelper.getEndereco().setEndereco_id(Long.parseLong(cep));
-            
+
             consumirWS = new ConsumirWS();
-            String json = consumirWS.sendPost(UrlsConstants.BUSCA_REGISTRO,new Gson().toJson(viewHelper.getEndereco()), "POST");
-            viewHelper.setEndereco(new Gson().fromJson(json, Endereco.class));
+            String json = consumirWS.sendPost(UrlsConstants.BUSCA_REGISTRO, new Gson().toJson(viewHelper.getEndereco()), "POST");
+
+            if (CRUDEnderecoUtil.isJson(viewHelper.getEndereco(), json)) {
+                viewHelper.setEndereco(new Gson().fromJson(json, Endereco.class));
+            } else {
+                CRUDEnderecoUtil.mostrarMensagemAviso(json);
+            }
+
         } catch (Exception ex) {
             CRUDEnderecoUtil.mostrarMensagemError(ex.getLocalizedMessage());
         }
     }
-    
-    public String inicializarDetalharEndereco(){
+
+    public String inicializarDetalharEndereco() {
         return BuscarEnderecoNavigation.DETALHAR_ENDERECO;
     }
-    
+
     public DetalharEnderecoViewHelper getViewHelper() {
         return viewHelper;
     }
@@ -79,5 +85,5 @@ public class DetalharEnderecoBean implements Serializable {
         }
         return true;
     }
-    
+
 }

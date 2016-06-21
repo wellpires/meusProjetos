@@ -10,11 +10,11 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -41,9 +41,13 @@ public class BuscarEnderecosBean implements Serializable {
             viewHelper.inicializar();
 
             String json = consumirWS.sendGet(UrlsConstants.LISTAR_TODOS_ENDERECOS);
-
-            viewHelper.setLstEnderecos(new Gson().fromJson(json, new TypeToken<List<Endereco>>() {
-            }.getType()));
+            
+            if (CRUDEnderecoUtil.isJsonLista(new TypeToken<List<Endereco>>(){}, json)) {
+                viewHelper.setLstEnderecos(new Gson().fromJson(json, new TypeToken<List<Endereco>>() {}.getType()));
+            } else {
+                CRUDEnderecoUtil.mostrarMensagemAviso(json);
+                return "";
+            }
 
         } catch (Exception ex) {
             CRUDEnderecoUtil.mostrarMensagemError(ex.getLocalizedMessage());
@@ -58,7 +62,12 @@ public class BuscarEnderecosBean implements Serializable {
             Endereco e = new Endereco();
             e.setEndereco_id(viewHelper.getEnderecoSelecionado().getEndereco_id());
             String json = new Gson().toJson(e);
-            consumirWS.sendPost(UrlsConstants.EXCLUIR_REGISTRO, json, "POST");
+            String msg = consumirWS.sendPost(UrlsConstants.EXCLUIR_REGISTRO, json, "POST");
+
+            if (msg.length() > 0) {
+                CRUDEnderecoUtil.mostrarMensagemAviso(msg);
+            }
+
         } catch (Exception ex) {
             CRUDEnderecoUtil.mostrarMensagemError(ex.getLocalizedMessage());
         }
@@ -74,32 +83,6 @@ public class BuscarEnderecosBean implements Serializable {
 
     public void setViewHelper(BuscarEnderecoViewHelper viewHelper) {
         this.viewHelper = viewHelper;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 97 * hash + Objects.hashCode(this.viewHelper);
-        hash = 97 * hash + Objects.hashCode(this.consumirWS);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final BuscarEnderecosBean other = (BuscarEnderecosBean) obj;
-        if (!Objects.equals(this.viewHelper, other.viewHelper)) {
-            return false;
-        }
-        if (!Objects.equals(this.consumirWS, other.consumirWS)) {
-            return false;
-        }
-        return true;
     }
 
 }

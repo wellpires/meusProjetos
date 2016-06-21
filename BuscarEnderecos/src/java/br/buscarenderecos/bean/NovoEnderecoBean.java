@@ -7,13 +7,10 @@ import br.buscarenderecos.services.ConsumirWS;
 import br.buscarenderecos.utils.CRUDEnderecoUtil;
 import br.buscarenderecos.utils.UrlsConstants;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
 /**
@@ -58,7 +55,14 @@ public class NovoEnderecoBean {
 
         try {
             consumirWS = new ConsumirWS();
-            consumirWS.sendPost(UrlsConstants.INCLUIR_NOVO_REGISTRO, new Gson().toJson(viewHelper.getEndereco()), "POST");
+            String msg = consumirWS.sendPost(UrlsConstants.INCLUIR_NOVO_REGISTRO, new Gson().toJson(viewHelper.getEndereco()), "POST");
+            
+            if(msg.length() > 0){
+                CRUDEnderecoUtil.mostrarMensagemAviso(msg);
+                return;
+            }
+            
+            FacesContext.getCurrentInstance().getExternalContext().redirect(BuscarEnderecoNavigation.LISTAR_ENDERECOS.replace("xhtml", "jsf"));
         } catch (Exception ex) {
             CRUDEnderecoUtil.mostrarMensagemError(ex.getLocalizedMessage());
         }

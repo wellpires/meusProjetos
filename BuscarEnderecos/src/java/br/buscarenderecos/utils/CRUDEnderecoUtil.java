@@ -107,4 +107,13 @@ public class CRUDEnderecoUtil {
         }
     }
     
+    public static boolean isJsonLista(TypeToken destino, String json){
+        try{
+            new Gson().fromJson(json,destino.getType());
+            return true;
+        }catch(JsonSyntaxException jse){
+            return false;
+        }
+    }
+    
 }

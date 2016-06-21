@@ -83,7 +83,13 @@ public class AlterarEnderecoBean implements Serializable {
 
             consumirWS = new ConsumirWS();
             String json = new Gson().toJson(viewHelper.getEndereco());
-            consumirWS.sendPost(UrlsConstants.ALTERAR_REGISTRO, json, "PUT");
+            String msg = consumirWS.sendPost(UrlsConstants.ALTERAR_REGISTRO, json, "PUT");
+            
+            if(msg.length() > 0){
+                CRUDEnderecoUtil.mostrarMensagemAviso(msg);
+                return;
+            }
+            
             FacesContext.getCurrentInstance().getExternalContext().redirect(BuscarEnderecoNavigation.LISTAR_ENDERECOS.replace("xhtml", "jsf"));
         } catch (Exception ex) {
             CRUDEnderecoUtil.mostrarMensagemError(ex.getLocalizedMessage());
