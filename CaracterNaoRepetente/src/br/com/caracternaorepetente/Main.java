@@ -15,7 +15,10 @@ public class Main {
         String input;
         do {
             input = JOptionPane.showInputDialog(null, "Forneça uma cadeia de caracteres", "Caracter Repetido", JOptionPane.QUESTION_MESSAGE);
-        } while (input == null || input.trim().length() == 0);
+            if(input == null){
+                System.exit(0);
+            }
+        } while (input.trim().length() == 0);
 
         IStream stream = new StreamImpl(input);
         IStream streamComparacao;
