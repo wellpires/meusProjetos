@@ -10,7 +10,7 @@
     <ui:composition template="template.xhtml" >
         <ui:define name="corpo">
             <h:form id="listarEnderecosForm">
-                <p:growl id="grMensagem" redisplay="false" autoUpdate="true" globalOnly="true" showDetail="true" />
+                <p:growl id="grMensagem" widgetVar="wdgMensagem" redisplay="false" globalOnly="true" showDetail="true" />
                 <p:panel>
                     <p:dataTable id="dtEnderecos"
                                  value="#{buscarEnderecosBean.viewHelper.lstEnderecos}"
