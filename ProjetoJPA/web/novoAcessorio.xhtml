@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:composition template="template.xhtml" >
+        <ui:define name="corpo">
+            <link rel="stylesheet" type="text/css" href="css/projetoJPA.css"/>
+            <h:form id="novoAcessorioForm">
+                <p:growl autoUpdate="true" showDetail="true" globalOnly="true"/>
+                <p:panel header="#{msgs.label_novo_acessorio}" style="height: 100%">
+                    <p:panel id="pnAcessorio">
+                        <p:outputLabel value="#{msgs.label_acessorio}: " 
+                                       for="txtAcessorio"/>
+                        <h:panelGrid columns="2" class="gridSecundaria">
+                            <p:inputText id="txtAcessorio" 
+                                         size="60" 
+                                         maxlength="60" 
+                                         value="#{persistenciaHibernateBean.acessorio.descricao}"
+                                         required="true"
+                                         requiredMessage="#{msgs.mensagem_nome_acessorio_obrigatorio}" />
+                            <p:message for="txtAcessorio" showDetail="true" display="icon"  />
+                        </h:panelGrid>
+                        <f:facet name="footer">
+                            <h:panelGrid columnClasses="coluna-direita" width="100%">
+                                <p:commandButton value="#{msgs.label_gravar}"
+                                                 actionListener="#{persistenciaHibernateBean.gravarAcessorio}"
+                                                 update=":novoAcessorioForm:txtAcessorio :novoAcessorioForm:dtAcessorios" >
+                                </p:commandButton>
+                            </h:panelGrid>
+                        </f:facet>
+                    </p:panel>
+
+                    <p:panel>
+                        <p:dataTable id="dtAcessorios"
+                                     value="#{persistenciaHibernateBean.lstAcessorios}"
+                                     var="acessorio"
+                                     scrollable="true" 
+                                     scrollHeight="170"
+                                     widgetVar="wdgAcessorio"
+                                     filteredValue="#{persistenciaHibernateBean.lstMarcasFiltradas}"
+                                     selectionMode="single"
+                                     selection="#{persistenciaHibernateBean.acessorioSelecionado}"
+                                     rowKey="#{acessorio.codigo}"
+                                     emptyMessage="Sem registros">
+
+                            <p:ajax event="rowSelect"   update=":novoAcessorioForm:pnBotoesTabela :novoAcessorioForm:pnAcessorio" listener="#{persistenciaHibernateBean.alterarFlagAcessorio}" />
+                            <p:ajax event="rowUnselect" update=":novoAcessorioForm:pnBotoesTabela :novoAcessorioForm:pnAcessorio" />
+
+                            <f:facet name="header">
+                                <p:outputPanel >
+                                    <div align="left">
+                                        <h:outputText value="#{msgs.label_procurar}:" />
+                                        <p:inputText id="globalFilter" onkeyup="PF('wdgAcessorio').filter()" style="width:50%;margin-left: 10px"/>
+                                    </div>
+                                </p:outputPanel>
+                            </f:facet>
+
+                            <p:column headerText="acessório"
+                                      filterBy="#{acessorio.descricao}"
+                                      filterMatchMode="contains"
+                                      filterStyle="display:none">
+                                <h:outputLabel value="#{acessorio.descricao}" />
+                            </p:column>
+                        </p:dataTable>
+                        <f:facet name="footer">
+                            <h:panelGrid width="100%" columnClasses="coluna-direita">
+                                <h:panelGroup id="pnBotoesTabela">
+                                    <p:commandButton id="btnExcluir"
+                                                     value="#{msgs.label_excluir}" 
+                                                     onclick="PF('wdgExclusao').show()"
+                                                     disabled="#{!persistenciaHibernateBean.excluirAcessorio}" />
+                                </h:panelGroup>
+                            </h:panelGrid>
+                        </f:facet>
+                    </p:panel>
+                    <f:facet name="footer">
+                        <h:panelGrid columns="2" width="100%" columnClasses="coluna-esquerda">
+                            <p:commandButton value="#{msgs.label_voltar}"
+                                             action="#{persistenciaHibernateBean.inicializarCadastro()}"
+                                             immediate="true"
+                                             ajax="false"/>
+                        </h:panelGrid>
+                    </f:facet>
+                </p:panel>
+                <p:confirmDialog id="dlgExclusao" closeOnEscape="true" message="Tem certeza?" widgetVar="wdgExclusao" header="Exclusão" >
+                    <p:commandButton value="#{msgs.label_sim}" 
+                                     actionListener="#{persistenciaHibernateBean.excluirAcessorio}" 
+                                     process="@this :novoAcessorioForm:dtAcessorios"
+                                     oncomplete="PF('wdgExclusao').hide()"
+                                     update=":novoAcessorioForm:dtAcessorios :novoAcessorioForm:pnBotoesTabela :novoAcessorioForm:txtAcessorio"/>
+                    <p:commandButton value="#{msgs.label_nao}" onclick="PF('wdgExclusao').hide()" />
+                </p:confirmDialog>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

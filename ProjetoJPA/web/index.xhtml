@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:composition template="template.xhtml" >
+        <ui:define name="corpo">
+            <h:form id="indexForm">
+                <p:growl autoUpdate="true" showDetail="true" globalOnly="true"/>
+                <p:panel>
+                    <p:dataTable id="dtVeiculos" 
+                                 value="#{persistenciaHibernateBean.lstVeiculos}" 
+                                 var="veiculo" 
+                                 scrollable="true" 
+                                 scrollHeight="170"
+                                 widgetVar="wdgVeiculos"
+                                 filteredValue="#{persistenciaHibernateBean.lstVeiculosFiltrados}"
+                                 selectionMode="single"
+                                 selection="#{persistenciaHibernateBean.veiculoSelecionado}"
+                                 rowKey="#{veiculo.codigo}"
+                                 emptyMessage="Sem registros">
+
+                        <p:ajax event="rowSelect" update=":indexForm:btnDetalhar" />
+                        <p:ajax event="rowUnselect" update=":indexForm:btnDetalhar" />
+
+                        <f:facet name="header">
+                            <p:outputPanel >
+                                <div align="left">
+                                    <h:outputText value="#{msgs.label_procurar}:" />
+                                    <p:inputText id="globalFilter" onkeyup="PF('wdgVeiculos').filter()" style="width:50%;margin-left: 10px"/>
+                                </div>
+                            </p:outputPanel>
+                        </f:facet>
+                        <p:column headerText="#{msgs.label_codigo}" 
+                                  filterBy="#{veiculo.codigo}"
+                                  filterMatchMode="contains"
+                                  filterStyle="display:none">
+                            <h:outputLabel value="#{veiculo.codigo}" />
+                        </p:column>
+                        <p:column headerText="#{msgs.label_fabricante}" 
+                                  filterBy="#{veiculo.fabricante}"
+                                  filterMatchMode="contains"
+                                  filterStyle="display:none">
+                            <h:outputLabel value="#{veiculo.fabricante}"/>
+                        </p:column>
+                        <p:column headerText="#{msgs.label_modelo}" 
+                                  filterBy="#{veiculo.modelo}"
+                                  filterMatchMode="contains"
+                                  filterStyle="display:none">
+                            <h:outputLabel value="#{veiculo.modelo}" />
+                        </p:column>
+                        <p:column headerText="#{msgs.label_data_inclusao}" 
+                                  filterBy="#{veiculo.dataCadastro}"
+                                  filterMatchMode="contains"
+                                  filterStyle="display:none">
+                            <h:outputLabel value="#{veiculo.dataCadastro}" converter="timeStampConverter" />
+                        </p:column>
+                    </p:dataTable>
+                    <f:facet name="footer">
+                        <div align="right">                            
+                            <p:commandButton id="btnNovoAcessorio" 
+                                             value="#{msgs.label_novo_acessorio}"
+                                             immediate="true"
+                                             style="width: 15%"
+                                             action="#{persistenciaHibernateBean.inicializarNovoAcessorio()}"
+                                             ajax="false"/>
+                            
+                            <p:commandButton id="btnNovaMarca" 
+                                             value="#{msgs.label_nova_marca}"
+                                             action="#{persistenciaHibernateBean.inicializarNovaMarca()}"
+                                             immediate="true"
+                                             style="width: 15%"
+                                             ajax="false"/>
+
+                            <p:commandButton id="btnNovo" 
+                                             value="#{msgs.label_novo}"
+                                             action="#{persistenciaHibernateBean.inicializarNovoRegistro()}"
+                                             immediate="true"
+                                             style="width: 10%"
+                                             ajax="false"/>
+
+                            <p:commandButton id="btnDetalhar" 
+                                             value="#{msgs.label_detalhar}" 
+                                             disabled="#{!persistenciaHibernateBean.detalharAtivo}"
+                                             action="#{persistenciaHibernateBean.inicializarDetalhe()}"
+                                             immediate="true"
+                                             style="width: 10%"
+                                             ajax="false"/>
+                        </div>
+                    </f:facet>
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

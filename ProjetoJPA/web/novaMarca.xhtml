@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:composition template="template.xhtml" >
+        <ui:define name="corpo">
+            <link rel="stylesheet" type="text/css" href="css/projetoJPA.css"/>
+            <h:form id="novaMarcaForm"  style="height: 100%">
+                <p:growl id="grMsg" globalOnly="true" showDetail="true" autoUpdate="true" />
+                <p:panel header="#{msgs.label_nova_marca}" style="height: 100%">
+                    <p:panel id="pnMarca">
+                        <p:outputLabel value="#{msgs.label_marca}: " 
+                                       for="txtMarca"/>
+                        <h:panelGrid columns="2" class="gridSecundaria">
+                            <p:inputText id="txtMarca" 
+                                         size="60" 
+                                         maxlength="60" 
+                                         value="#{persistenciaHibernateBean.marca.marca}"
+                                         required="true"
+                                         requiredMessage="#{msgs.mensagem_nome_marca_obrigatorio}" />
+                            <p:message for="txtMarca" showDetail="true" display="icon"  />
+                        </h:panelGrid>
+                        <f:facet name="footer">
+                            <h:panelGrid columnClasses="coluna-direita" width="100%">
+                                <p:commandButton value="#{msgs.label_gravar}"
+                                                 actionListener="#{persistenciaHibernateBean.gravarMarca}"
+                                                 update=":novaMarcaForm:dtMarcas :novaMarcaForm:txtMarca" >
+                                </p:commandButton>
+                            </h:panelGrid>
+                        </f:facet>
+                    </p:panel>
+
+                    <p:panel>
+                        <p:dataTable id="dtMarcas"
+                                     value="#{persistenciaHibernateBean.lstMarcas}"
+                                     var="marca"
+                                     scrollable="true" 
+                                     scrollHeight="170"
+                                     widgetVar="wdgMarcas"
+                                     filteredValue="#{persistenciaHibernateBean.lstMarcasFiltradas}"
+                                     selectionMode="single"
+                                     selection="#{persistenciaHibernateBean.marcaSelecionada}"
+                                     rowKey="#{marca.codigo}"
+                                     emptyMessage="Sem registros">
+
+                            <p:ajax event="rowSelect"   update=":novaMarcaForm:pnBotoes :novaMarcaForm:pnMarca" listener="#{persistenciaHibernateBean.alterarFlagMarca}" />
+                            <p:ajax event="rowUnselect" update=":novaMarcaForm:pnBotoes :novaMarcaForm:pnMarca" />
+
+                            <f:facet name="header">
+                                <p:outputPanel >
+                                    <div align="left">
+                                        <h:outputText value="#{msgs.label_procurar}:" />
+                                        <p:inputText id="globalFilter" onkeyup="PF('wdgMarcas').filter()" style="width:50%;margin-left: 10px"/>
+                                    </div>
+                                </p:outputPanel>
+                            </f:facet>
+
+                            <p:column headerText="marca"
+                                      filterBy="#{marca.marca}"
+                                      filterMatchMode="contains"
+                                      filterStyle="display:none">
+                                <h:outputLabel value="#{marca.marca}" />
+                            </p:column>
+                        </p:dataTable>
+                        <f:facet name="footer">
+                            <h:panelGrid width="100%" columnClasses="coluna-direita">
+                                <h:panelGroup id="pnBotoes">
+                                    <p:commandButton id="btnExcluir"
+                                                     value="#{msgs.label_excluir}" 
+                                                     onclick="PF('wdgExclusao').show()"
+                                                     disabled="#{!persistenciaHibernateBean.excluirMarca}" />
+                                </h:panelGroup>
+
+                            </h:panelGrid>
+                        </f:facet>
+                    </p:panel>
+                    <f:facet name="footer">
+                        <h:panelGrid columns="2" width="100%" columnClasses="coluna-esquerda">
+                            <p:commandButton value="#{msgs.label_voltar}"
+                                             action="#{persistenciaHibernateBean.inicializarCadastro()}"
+                                             immediate="true"
+                                             ajax="false"/>
+                        </h:panelGrid>
+                    </f:facet>
+                </p:panel>
+
+                <p:confirmDialog id="dlgExclusao" closeOnEscape="true" message="Tem certeza?" widgetVar="wdgExclusao" header="Exclusão" >
+                    <p:commandButton value="#{msgs.label_sim}" 
+                                     actionListener="#{persistenciaHibernateBean.excluirMarca}" 
+                                     process="@this :novaMarcaForm:dtMarcas"
+                                     oncomplete="PF('wdgExclusao').hide()"
+                                     update=":novaMarcaForm:dtMarcas :novaMarcaForm:pnBotoes :novaMarcaForm:txtMarca"/>
+                    <p:commandButton value="#{msgs.label_nao}" onclick="PF('wdgExclusao').hide()" />
+                </p:confirmDialog>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,258 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:composition template="template.xhtml" >
+        <ui:define name="corpo">
+            <link rel="stylesheet" type="text/css" href="css/projetoJPA.css"/>
+            <h:form id="novoRegistroForm" enctype="multipart/form-data">
+                <p:growl id="grMsg" globalOnly="true" showDetail="true" autoUpdate="true"  />
+                <p:panel header="#{msgs.label_novo_veiculo}" style="height: 100%">
+                    <h:panelGrid style="width: 100%">
+                        <h:panelGroup>
+                            <p:fieldset legend="#{msgs.label_dados_veiculo}">
+                                <p:outputLabel value="#{msgs.label_fabricante}: " for="txtFabricante"/>
+                                <h:panelGrid columns="2" class="gridSecundaria">
+                                    <p:inputText id="txtFabricante" 
+                                                 size="60"
+                                                 maxlength="60" 
+                                                 value="#{persistenciaHibernateBean.veiculo.fabricante}"
+                                                 required="true"
+                                                 requiredMessage="#{msgs.mensagem_fabricante_obrigatorio}" >
+                                    </p:inputText>
+                                    <p:message for="txtFabricante" showDetail="true" display="icon"  />
+                                </h:panelGrid>
+
+                                <p:outputLabel value="#{msgs.label_modelo}: " 
+                                               for="txtModelo"/>
+                                <h:panelGrid columns="2" class="gridSecundaria">
+                                    <p:inputText id="txtModelo" 
+                                                 size="60" 
+                                                 maxlength="60" 
+                                                 value="#{persistenciaHibernateBean.veiculo.modelo}"
+                                                 required="true"
+                                                 requiredMessage="#{msgs.mensagem_modelo_obrigatorio}" />
+                                    <p:message for="txtModelo" showDetail="true" display="icon" />
+                                </h:panelGrid>
+
+                                <p:outputLabel value="#{msgs.label_ano_fabricacao}: " 
+                                               for="txtAnoFabricacao"/>
+                                <h:panelGrid columns="2" class="gridSecundaria" columnClasses="width-vinte-porcento, width-quatrocentos-cinquenta-pixel">
+                                    <p:inputText id="txtAnoFabricacao" 
+                                                 dir="RTL" 
+                                                 maxlength="4"
+                                                 onkeypress="return somenteNumero(event)"
+                                                 value="#{persistenciaHibernateBean.veiculo.anoFabricacao}"
+                                                 required="true"
+                                                 requiredMessage="#{msgs.mensagem_ano_fabricacao_obrigatorio}"
+                                                 validatorMessage="#{msgs.mensagem_ano_fabricacao_valido}">
+                                        <f:validateDoubleRange minimum="1900" maximum="2016" />
+                                    </p:inputText>
+                                    <p:message for="txtAnoFabricacao" showDetail="true" />
+                                </h:panelGrid>
+
+                                <p:outputLabel value="#{msgs.label_ano_modelo}: " 
+                                               for="txtAnoModelo"/>
+                                <h:panelGrid columns="2" class="gridSecundaria" columnClasses="width-vinte-porcento, width-trezentos-cinquenta-pixel">
+                                    <p:inputText id="txtAnoModelo" 
+                                                 dir="RTL" 
+                                                 maxlength="4"
+                                                 onkeypress="return somenteNumero(event)"
+                                                 value="#{persistenciaHibernateBean.veiculo.anoModelo}"
+                                                 required="true"
+                                                 requiredMessage="#{msgs.mensagem_ano_modelo_obrigatorio}"
+                                                 validatorMessage="#{msgs.mensagem_ano_modelo_valido}">
+                                        <f:validateDoubleRange minimum="1900" maximum="2016" />
+                                    </p:inputText>
+                                    <p:message for="txtAnoModelo" showDetail="true" />
+                                </h:panelGrid>
+
+
+                                <p:outputLabel value="#{msgs.label_valor}: " 
+                                               for="txtValor"/>
+                                <h:panelGrid columns="2" class="gridSecundaria">
+                                    <p:inputText id="txtValor"
+                                                 maxlength="12" 
+                                                 dir="RTL"
+                                                 size="12"
+                                                 value="#{persistenciaHibernateBean.veiculo.valor}"
+                                                 required="true"
+                                                 requiredMessage="#{msgs.mensagem_valido_obrigatorio}"
+                                                 validatorMessage="#{msgs.mensagem_valor_valido}"
+                                                 onkeydown="mascara(this, moeda)"
+                                                 converter="moedaConverter">
+                                        <f:validateDoubleRange minimum="0.1" for="txtValor" />
+                                    </p:inputText>
+                                    <p:message for="txtValor" showDetail="true" />
+                                </h:panelGrid>
+
+                                <p:outputLabel value="#{msgs.label_tipo_combustivel}: " 
+                                               for="cbTipoCombustivel"/>
+                                <h:panelGrid columns="2" class="gridSecundaria" columnClasses="width-vinte-porcento, width-trezentos-cinquenta-pixel">
+                                    <p:selectOneMenu id="cbTipoCombustivel" 
+                                                     value="#{persistenciaHibernateBean.veiculo.tipoCombustivel}"
+                                                     required="true"
+                                                     style="width: 300px"
+                                                     requiredMessage="#{msgs.mensagem_tipo_combustivel_obrigatorio}">
+                                        <f:selectItem itemLabel="#{msgs.label_selecione}"  itemValue=""/>
+                                        <f:selectItems value="#{persistenciaHibernateBean.lstTipoCombustivel}" />
+                                    </p:selectOneMenu>
+                                    <p:message for="cbTipoCombustivel" showDetail="true" />
+                                </h:panelGrid>
+
+                                <p:outputLabel value="marca: " 
+                                               for="cbMarca"/>
+                                <h:panelGrid columns="2" class="gridSecundaria" columnClasses="width-vinte-porcento, width-trezentos-cinquenta-pixel">
+                                    <p:selectOneMenu id="cbMarca" 
+                                                     value="#{persistenciaHibernateBean.veiculo.marca}"
+                                                     required="true"
+                                                     requiredMessage="#{msgs.mensagem_nome_marca_obrigatorio}"
+                                                     converter="marcaConverter"
+                                                     disabled="#{empty persistenciaHibernateBean.lstMarcas}"
+                                                     style="width: 300px" >
+                                        <f:selectItem itemLabel="#{msgs.label_selecione}"  itemValue=""/>
+                                        <f:selectItems value="#{persistenciaHibernateBean.lstMarcas}" 
+                                                       var="marca" 
+                                                       itemLabel="#{marca.marca}"
+                                                       itemValue="#{marca}" >
+                                        </f:selectItems>
+                                    </p:selectOneMenu>
+                                    <p:message for="cbMarca" showDetail="true"  />
+                                </h:panelGrid>
+
+                                <p:panel header="#{msgs.label_acessorios}" style="width: 100%">
+                                    <h:panelGrid columns="1" class="gridSecundaria" width="100%">
+                                        <h:panelGrid columns="2"  class="gridSecundaria">
+                                            <p:commandButton id="btnAdcAcessorio"
+                                                             value="#{msgs.label_adicionar_acessorios}"
+                                                             onclick="PF('wdgAcessorios').show()" 
+                                                             immediate="true" />
+                                            <p:message for=":novoRegistroForm:txtAcessorio" showDetail="true"  />
+                                        </h:panelGrid>
+                                        <p:outputPanel id="pnAcessorio" autoUpdate="true">
+                                            <p:inputTextarea id="txtAcessorio" 
+                                                             value="#{persistenciaHibernateBean.descreverNomesAcessorios}" 
+                                                             autoResize="true"
+                                                             readonly="#{facesContext.renderResponse}"
+                                                             style="width: 100%"
+                                                             required="true"
+                                                             requiredMessage="#{msgs.mensagem_acessorio_obrigatorio}">
+                                            </p:inputTextarea>
+                                        </p:outputPanel>
+                                    </h:panelGrid>
+                                </p:panel>
+
+                                <p:panelGrid class="imagem" style="width:100%;height: 510px !important" columns="1" >
+                                    <f:facet name="header">
+                                        <p:outputLabel value="#{msgs.label_imagem_veiculo}" />
+                                    </f:facet>
+                                    <h:panelGroup>
+                                        <p:graphicImage value="#{persistenciaHibernateBean.veiculo.imagem}" 
+                                                        id="giImagem"
+                                                        class="imagem"
+                                                        style="width:100% !important;"
+                                                        cache="false"/>
+                                    </h:panelGroup>
+                                    <f:facet name="footer">
+                                        <p:fileUpload id="fuImagemVeiculo"
+                                                      mode="advanced"
+                                                      skinSimple="true"
+                                                      auto="true"
+                                                      label="#{msgs.label_escolha_imagem}"
+                                                      allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+                                                      required="true"
+                                                      requiredMessage="#{msgs.label_escolha_imagem}"
+                                                      fileUploadListener="#{persistenciaHibernateBean.carregar}"
+                                                      update=":novoRegistroForm:giImagem"  >
+                                        </p:fileUpload>
+                                        <p:message id="msgImgVeiculo" for="fuImagemVeiculo" showDetail="true" />
+                                    </f:facet>
+                                </p:panelGrid>
+                            </p:fieldset>
+                        </h:panelGroup>
+
+                        <h:panelGroup>
+                            <p:fieldset legend="#{msgs.label_dados_proprietario}">
+                                <p:outputLabel value="#{msgs.label_nome_proprietario}:" />
+                                <h:panelGrid columns="2" class="gridSecundaria">
+                                    <p:inputText id="txtNomeProprietario" 
+                                                 value="#{persistenciaHibernateBean.veiculo.proprietario.nome}"
+                                                 maxlength="60"
+                                                 size="60"
+                                                 required="true"
+                                                 requiredMessage="#{msgs.mensagem_nome_proprietario_obrigatorio}"/>
+                                    <p:message for="txtNomeProprietario" showDetail="true" />
+                                </h:panelGrid>
+
+                                <p:outputLabel value="#{msgs.label_telefone_proprietario}:" />
+                                <h:panelGrid columns="2" class="gridSecundaria">
+                                    <p:inputMask id="txtTelefoneProprietario"
+                                                 mask="(99)9999-9999"
+                                                 value="#{persistenciaHibernateBean.veiculo.proprietario.telefone}"
+                                                 maxlength="20"
+                                                 size="20"
+                                                 required="true"
+                                                 requiredMessage="#{msgs.mensagem_nome_telefone_obrigatorio}"/>
+                                    <p:message for="txtTelefoneProprietario" showDetail="true" />
+                                </h:panelGrid>
+
+                                <p:outputLabel value="#{msgs.label_email_proprietario}:" />
+                                <p:inputText id="txtEmailProprietario"
+                                             value="#{persistenciaHibernateBean.veiculo.proprietario.email}"
+                                             maxlength="50"
+                                             size="50"
+                                             style="width: 100%;" />
+                            </p:fieldset>
+                        </h:panelGroup>
+                    </h:panelGrid>
+                    <f:facet name="footer">
+                        <h:panelGrid columns="2" width="100%" columnClasses="coluna-esquerda, coluna-direita">
+                            <p:commandButton value="#{msgs.label_voltar}"
+                                             action="#{persistenciaHibernateBean.inicializarCadastro()}"
+                                             immediate="true"
+                                             ajax="false"/>
+                            <p:commandButton value="#{msgs.label_gravar}"
+                                             action="#{persistenciaHibernateBean.gravar}"
+                                             ajax="false"
+                                             update=":novoRegistroForm:dtVeiculos" />
+                        </h:panelGrid>
+                    </f:facet>
+                </p:panel>
+                <p:dialog id="dlgAcessorios" 
+                          header="#{msgs.label_acessorio}" 
+                          resizable="false" 
+                          widgetVar="wdgAcessorios"
+                          responsive="true"
+                          draggable="false"
+                          width="auto">
+                    <h:panelGrid style="white-space: nowrap;">
+                        <p:pickList id="pckAcessorios" 
+                                    value="#{persistenciaHibernateBean.acessorios}" 
+                                    var="acessorio" 
+                                    itemLabel="#{acessorio.descricao}" 
+                                    itemValue="#{acessorio}"
+                                    showSourceFilter="true"
+                                    showTargetFilter="true"
+                                    responsive="true"
+                                    converter="acessorioConverter">
+                            <p:ajax event="transfer" listener="#{persistenciaHibernateBean.onTransfer}"/>
+                        </p:pickList>
+                    </h:panelGrid>
+
+                    <f:facet name="footer">
+                        <h:panelGrid class="coluna-direita">
+                            <p:commandButton value="#{msgs.label_ok}" 
+                                             onclick="PF('wdgAcessorios').hide();"
+                                             immediate="true"/>
+
+                        </h:panelGrid>
+                    </f:facet>
+                </p:dialog>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
