@@ -3,71 +3,15 @@
         <title>Lista Telefonica</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <link rel="stylesheet" type="text/css" href="libs/bootstrap/bootstrap.css">
-        <style>
-            .jumbotron{
-                width: 700px;
-                text-align: center;
-                margin-left: auto;
-                margin-right: auto;
-                margin-top: 20px;
-            }
-            .table{
-                margin-top:20px;
-                width: 100%;
-            }
-            .form-control{
-                margin-bottom: 5px;
-            }
-            .selecionado{
-                background-color: yellow !important;
-            }
-            .negrito{
-                font-weight: bold !important;
-            }
-        </style>
+        <link rel="stylesheet" type="text/css" href="css/app.css">
         <script src="libs/angular/angular.js"></script>
         <script src="libs/angular/angular-messages.js"></script>
-        <script>
-            var app = angular.module("listaTelefonica", ["ngMessages"]);
-            app.controller("listaTelefonicaCtrl", function ($scope, $http) {
-                $scope.app = "Lista Telefonica";
-                var carregarContatos = function () {
-                    $http.get('http://localhost:8080/ContatosWS/webresources/contatoWS/buscarContatos').success(function (data) {
-                        $scope.contatos = data;
-                    });
-                };
-
-                var carregarOperadoras = function(){
-                    $http.get('http://localhost:8080/ContatosWS/webresources/contatoWS/buscarOperadoras').success(function(data){
-                        $scope.operadoras = data;
-                    });
-                };
-
-                $scope.adicionarContato = function (contato) {
-                    $scope.contatos.push(angular.copy(contato));
-                    delete $scope.contato;
-                    $scope.contatoForm.$setPristine();
-                };
-                $scope.apagarContatos = function (contatos) {
-                    $scope.contatos = contatos.filter(function (contato) {
-                        if (!contato.selecionado)
-                            return contato;
-                    });
-                };
-                $scope.isContatoSelecionado = function (contatos) {
-                    return contatos.some(function (contato) {
-                        return contato.selecionado;
-                    });
-                };
-                $scope.ordenarPor = function (campo) {
-                    $scope.campoOrdenacao = campo;
-                    $scope.direcaoOrdenacao = !$scope.direcaoOrdenacao;
-                };
-
-                carregarContatos();
-                carregarOperadoras();
-            })
-        </script>
+        <script src="js/app.js"></script>
+        <script src="js/controllers/listaTelefonicaCtrl.js"></script>
+        <script src="js/services/contatosAPIService.js"></script>
+        <script src="js/services/operadoraAPIService.js"></script>
+        <script src="js/utils/listaTelefonicaUtils.js"></script>
+        <script src="js/constants/constants.js"></script>
     </head>
     <body ng-controller="listaTelefonicaCtrl">
         <div class="jumbotron">
@@ -86,16 +30,16 @@
                     <td><input type="checkbox" ng-model="contato.selecionado"/></td>
                     <td> {{contato.nome| uppercase}} </td>
                     <td> {{contato.telefone}} </td>
-                    <td> {{contato.operadora.nome | lowercase}} </td>
+                    <td> {{contato.operadora.nome| lowercase}} </td>
                     <td><div style="width:20px; height: 20px" ng-style="{'background-color': contato.cor}"></div></td>
-                    <td> {{contato.dataContato| date: 'dd/MM/yyyy'}} </td>
+                    <td> {{contato.dataContato | date: 'dd/MM/yyyy'}} </td>
                 </tr>
             </table>
             <hr/>
             <form name="contatoForm">
                 <input class="form-control" type="text" ng-model="contato.nome" name="nome" placeholder="Nome" ng-required="true" ng-minlength="10" />
                 <input class="form-control" type="text" ng-model="contato.telefone" name="telefone" placeholder="Telefone" ng-required="true" ng-pattern="/^\d{4,5}-\d{4}$/"/>
-                <input class="form-control" type="text" ng-model="contato.data" name="data" placeholder="Data" ng-required="true" ng-pattern="/^\d{1,2}\/\d{1,2}\/\d{1,4}$/"/>
+                <input class="form-control" type="text" ng-model="contato.dataContatoJson" name="data" placeholder="Data" ng-required="true" ng-pattern="/^\d{1,2}\/\d{1,2}\/\d{1,4}$/"/>
                 <select class="form-control" ng-model="contato.operadora" ng-options="operadora.operadora_desc for operadora in operadoras">
                     <option value="">Selecione</option>
                 </select>
@@ -132,6 +76,6 @@
             <button class="btn btn-danger btn-block" ng-click="apagarContatos(contatos)" ng-if="isContatoSelecionado(contatos)" >Apagar Contatos</button>
 
         </div>
-        <div ng-include="'footer.html'"></div>
+        <div ng-include="'view/footer.html'"></div>
     </body>
 </html>
