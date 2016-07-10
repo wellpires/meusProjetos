@@ -1,8 +1,12 @@
 package br.com.contatosWS.modelo;
 
+import br.com.contatosWS.utils.ContatosUtils;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 /**
  *
@@ -29,6 +34,7 @@ public class Contato implements Serializable {
     private Long telefone = null;
     private String cor = null;
     private Date dataContato = null;
+    private String dataContatoJson = null;
     private Operadora operadora = null;
 
     @Id
@@ -79,6 +85,15 @@ public class Contato implements Serializable {
         this.dataContato = data_contato;
     }
 
+    public void setDataContatoJson(String dataContatoJson) {
+        this.dataContatoJson = dataContatoJson;
+    }
+    
+    @Transient
+    public String getDataContatoJson(){
+        return dataContatoJson;
+    }
+    
     @ManyToOne
     @JoinColumn(name = "operadora_id_FK", nullable = false)
     public Operadora getOperadora() {

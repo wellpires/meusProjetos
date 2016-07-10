@@ -37,8 +37,6 @@ public class JPADao {
         } catch (Exception erro) {
             tx.rollback();
             throw new Exception(erro);
-        } finally {
-            manager.close();
         }
 
     }
@@ -50,8 +48,6 @@ public class JPADao {
             return manager.find(classe, Long.parseLong(codigo.toString()));
         } catch(Exception e){
             throw new Exception(e);
-        } finally {
-            manager.close();
         }
 
     }
@@ -63,8 +59,6 @@ public class JPADao {
             return manager.createQuery("SELECT e FROM " + classe.getSimpleName() + " e").getResultList();
         }catch(Exception e){
             throw new Exception(e);
-        } finally {
-            manager.close();
         }
     }
 
@@ -79,8 +73,6 @@ public class JPADao {
         }catch(Exception e){
             tx.rollback();
             throw new Exception(e);
-        } finally {
-            manager.close();
         }
     }
 
@@ -96,8 +88,6 @@ public class JPADao {
         } catch (Exception e) {
             tx.rollback();
             throw new Exception(e);
-        } finally {
-            manager.close();
         }
     }
 }
