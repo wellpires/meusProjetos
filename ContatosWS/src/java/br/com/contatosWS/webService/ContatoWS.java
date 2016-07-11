@@ -6,7 +6,7 @@ import br.com.contatosWS.utils.ContatosUtils;
 import br.com.contatosWS.utils.JPADao;
 import br.com.contatosWS.utils.JPAUtil;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import java.util.List;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
@@ -48,7 +48,6 @@ public class ContatoWS {
         try {
             List<Contato> lstContatos = (List<Contato>) JPADao.buscarVariosRegistros(Contato.class);
             Gson json = new Gson();
-//            Gson json = new GsonBuilder().setDateFormat("dd/MM/yyyy").create();
             return Response.ok(json.toJson(lstContatos)).build();
         } catch (Exception ex) {
             return Response.serverError().build();
@@ -75,14 +74,26 @@ public class ContatoWS {
             Contato contato = (Contato) new Gson().fromJson(conteudo, Contato.class);
             contato.setDataContato(ContatosUtils.jsonDateToJavaDate(contato.getDataContatoJson()));
             JPADao.gravar(contato);
-            return Response.ok().header("Access-Control-Allow-Origin", "*")
-                                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                                .allow("OPTIONS").build();
+            return Response.ok().build();
         }catch(Exception e){
             return Response.serverError().build();
         }
     }
     
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @Path(value="removerContato")
+    public Response removerContato(String conteudo){
+        try{
+//            List<Contato> lstContatos = (List<Contato>) new Gson().fromJson(conteudo, new TypeToken<List<Contato>>() {}.getType());
+            List<Integer> lstCodigos = (List<Integer>) new Gson().fromJson(conteudo, new TypeToken<List<Integer>>() {}.getType()); 
+            JPADao.removerVariosContatos(Contato.class, lstCodigos);
+            return Response.ok().build();
+        }catch(Exception e){
+            return Response.serverError().build();
+        }
+    }
     /**
      * PUT method for updating or creating an instance of ContatoWS
      * @param content representation for the resource

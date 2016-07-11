@@ -3,6 +3,7 @@ package br.com.contatosWS.utils;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
 
 /**
  *
@@ -86,6 +87,23 @@ public class JPADao {
             manager.remove(endereco);
             tx.commit();
         } catch (Exception e) {
+            tx.rollback();
+            throw new Exception(e);
+        }
+    }
+    
+    public static void removerVariosContatos(Class classe, List<?> lstCodigos) throws Exception{
+        try{
+            
+            iniciarGerenciador();
+            tx = manager.getTransaction();
+            tx.begin();
+            
+            Query query = manager.createQuery("DELETE FROM " + classe.getSimpleName() + " e WHERE e.contatos_id IN :contatos_idList");
+            query.setParameter("contatos_idList", (List<Integer>) lstCodigos);
+            query.executeUpdate();
+            tx.commit();
+        }catch(Exception e){
             tx.rollback();
             throw new Exception(e);
         }
