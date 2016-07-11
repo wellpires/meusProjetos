@@ -4,6 +4,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <link rel="stylesheet" type="text/css" href="libs/bootstrap/bootstrap.css">
         <link rel="stylesheet" type="text/css" href="css/app.css">
+        <link rel="stylesheet" type="text/css" href="css/app.css">
+        <link rel="stylesheet" type="text/css" href="css/ui.css">
         <script src="libs/angular/angular.js"></script>
         <script src="libs/angular/angular-messages.js"></script>
         <script src="js/app.js"></script>
@@ -12,34 +14,42 @@
         <script src="js/services/operadoraAPIService.js"></script>
         <script src="js/utils/listaTelefonicaUtils.js"></script>
         <script src="js/constants/constants.js"></script>
+        <script src="js/filters/dateFilter.js"></script>
+        <script src="js/filters/telefoneFilter.js"></script>
+        <script src="js/directives/uiAlertDirective.js"></script>
+        <script src="js/directives/uiDateDirective.js"></script>
     </head>
     <body ng-controller="listaTelefonicaCtrl">
         <div class="jumbotron">
             <h3>{{app}}</h3>
+            <ui-alert title="Ops, aconteceu um problema!" message="error"></ui-alert>
+            
             <input class="form-control" type="text" ng-model="criterioDeBusca" placeholder="O que vc está buscando?" />
-            <table class="table table-striped">
-                <tr>
-                    <th></th>
-                    <th><a href="" ng-click="ordenarPor('nome')">Nome</a></th>
-                    <th><a href="" ng-click="ordenarPor('telefone')">Telefone</a></th>
-                    <th>Operadora</th>
-                    <th>Situação</th>
-                    <th>Data</th>
-                </tr>
-                <tr ng-class="{'selecionado negrito': contato.selecionado}" ng-repeat="contato in contatos| filter: {nome: criterioDeBusca} | orderBy: campoOrdenacao: direcaoOrdenacao">
-                    <td><input type="checkbox" ng-model="contato.selecionado"/></td>
-                    <td> {{contato.nome| uppercase}} </td>
-                    <td> {{contato.telefone}} </td>
-                    <td> {{contato.operadora.nome| lowercase}} </td>
-                    <td><div style="width:20px; height: 20px" ng-style="{'background-color': contato.cor}"></div></td>
-                    <td> {{contato.dataContato | date: 'dd/MM/yyyy'}} </td>
-                </tr>
-            </table>
+            <div style="overflow-x: hidden; overflow-y: auto; height: 300px">
+                <table class="table table-striped">
+                    <tr>
+                        <th></th>
+                        <th><a href="" ng-click="ordenarPor('nome')">Nome</a></th>
+                        <th><a href="" ng-click="ordenarPor('telefone')">Telefone</a></th>
+                        <th>Operadora</th>
+                        <th>Situação</th>
+                        <th>Data</th>
+                    </tr>
+                    <tr ng-class="{'selecionado negrito': contato.selecionado}" ng-repeat="contato in contatos| filter: {nome: criterioDeBusca} | orderBy: campoOrdenacao: direcaoOrdenacao">
+                        <td><input type="checkbox" ng-model="contato.selecionado"/></td>
+                        <td> {{contato.nome}} </td>
+                        <td> {{contato.telefone| telefoneFilter}} </td>
+                        <td> {{contato.operadora.operadora_desc}} </td>
+                        <td><div style="width:20px; height: 20px" ng-style="{'background-color': contato.cor}"></div></td>
+                        <td> {{contato.dataContato| dateFilter}} </td>
+                    </tr>
+                </table>
+            </div>
             <hr/>
             <form name="contatoForm">
                 <input class="form-control" type="text" ng-model="contato.nome" name="nome" placeholder="Nome" ng-required="true" ng-minlength="10" />
                 <input class="form-control" type="text" ng-model="contato.telefone" name="telefone" placeholder="Telefone" ng-required="true" ng-pattern="/^\d{4,5}-\d{4}$/"/>
-                <input class="form-control" type="text" ng-model="contato.dataContatoJson" name="data" placeholder="Data" ng-required="true" ng-pattern="/^\d{1,2}\/\d{1,2}\/\d{1,4}$/"/>
+                <input class="form-control" type="text" ng-model="contato.dataContatoJson" maxlength="10" name="data" placeholder="Data" ng-required="true" ng-pattern="/^\d{1,2}\/\d{1,2}\/\d{1,4}$/" ui-date />
                 <select class="form-control" ng-model="contato.operadora" ng-options="operadora.operadora_desc for operadora in operadoras">
                     <option value="">Selecione</option>
                 </select>

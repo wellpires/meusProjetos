@@ -9,8 +9,12 @@ app.factory("contatosAPI", function($http, config){
        contatoSalvar.cor = 'WHITE';
        return $http.post(config.baseUrl + '/cadastrarContatos', contatoSalvar);
    };
+   var _removerContatos = function(contatos){
+       return $http.post(config.baseUrl + '/removerContato', contatos);
+   };
    return {
        buscarContatos: _buscarContatos,
-       gravarContato: _gravarContato
+       gravarContato: _gravarContato,
+       removerContatos:_removerContatos
    };
 });

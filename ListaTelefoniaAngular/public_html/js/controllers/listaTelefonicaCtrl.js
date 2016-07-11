@@ -3,6 +3,8 @@ app.controller("listaTelefonicaCtrl", function ($scope, contatosAPI, operadorasA
     var carregarContatos = function () {
         contatosAPI.buscarContatos().success(function (data) {
             $scope.contatos = data;
+        }).error(function(data){
+            $scope.error = "Não foi possível carregar os dados!";
         });
     };
 
@@ -21,9 +23,15 @@ app.controller("listaTelefonicaCtrl", function ($scope, contatosAPI, operadorasA
     };
 
     $scope.apagarContatos = function (contatos) {
-        $scope.contatos = contatos.filter(function (contato) {
-            if (!contato.selecionado)
-                return contato;
+
+        var contatosSelecionados = [];
+        for (contato in contatos) {
+            if (contatos[contato].selecionado) {
+                contatosSelecionados.push(angular.copy(contatos[contato].contatos_id));
+            }
+        }
+        contatosAPI.removerContatos(contatosSelecionados).success(function (data) {
+            carregarContatos();
         });
     };
     $scope.isContatoSelecionado = function (contatos) {
