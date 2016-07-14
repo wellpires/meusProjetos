@@ -11,11 +11,9 @@ import java.util.List;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PUT;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -36,7 +34,7 @@ public class ContatoWS {
     public ContatoWS() {
         JPAUtil.getEntityManaged();
     }
-
+    
     /**
      * Retrieves representation of an instance of br.com.contatosWS.webService.ContatoWS
      * @return an instance of java.lang.String
@@ -86,20 +84,11 @@ public class ContatoWS {
     @Path(value="removerContato")
     public Response removerContato(String conteudo){
         try{
-//            List<Contato> lstContatos = (List<Contato>) new Gson().fromJson(conteudo, new TypeToken<List<Contato>>() {}.getType());
             List<Integer> lstCodigos = (List<Integer>) new Gson().fromJson(conteudo, new TypeToken<List<Integer>>() {}.getType()); 
             JPADao.removerVariosContatos(Contato.class, lstCodigos);
             return Response.ok().build();
         }catch(Exception e){
             return Response.serverError().build();
         }
-    }
-    /**
-     * PUT method for updating or creating an instance of ContatoWS
-     * @param content representation for the resource
-     */
-    @PUT
-    @Consumes("application/json")
-    public void putJson(String content) {
     }
 }
