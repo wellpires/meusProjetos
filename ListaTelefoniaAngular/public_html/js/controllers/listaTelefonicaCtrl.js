@@ -1,5 +1,8 @@
 app.controller("listaTelefonicaCtrl", function ($scope, contatosAPI, operadorasAPI) {
     $scope.app = "Lista Telefonica";
+    $scope.contatos = [];
+    $scope.operadoras = [];
+    
     var carregarContatos = function () {
         contatosAPI.buscarContatos().success(function (data) {
             $scope.contatos = data;

@@ -14,16 +14,31 @@
         <script src="js/services/operadoraAPIService.js"></script>
         <script src="js/utils/listaTelefonicaUtils.js"></script>
         <script src="js/constants/constants.js"></script>
-        <script src="js/filters/dateFilter.js"></script>
         <script src="js/filters/telefoneFilter.js"></script>
+        <script src="js/filters/dateFilter.js"></script>
         <script src="js/directives/uiAlertDirective.js"></script>
         <script src="js/directives/uiDateDirective.js"></script>
+        <script src="js/directives/uiTelefoneDirective.js"></script>
+        <script src="js/directives/uiAccordion.js"></script>
     </head>
     <body ng-controller="listaTelefonicaCtrl">
         <div class="jumbotron">
+
+            <ui-accordions>
+                <ui-accordion title="ACCORDION 1">
+                    akjdsgvdasojgdvaishd   
+                </ui-accordion>
+
+                <ui-accordion title="ACCORDION 2">
+                    alshidbavlskjdhabsldkjahs
+                </ui-accordion>
+            </ui-accordions>
+
             <h3>{{app}}</h3>
-            <ui-alert title="Ops, aconteceu um problema!" message="error"></ui-alert>
-            
+            <div>
+                <ui-alert title="Ops, aconteceu um problema!" message="error"></ui-alert>
+            </div>
+
             <input class="form-control" type="text" ng-model="criterioDeBusca" placeholder="O que vc está buscando?" />
             <div style="overflow-x: hidden; overflow-y: auto; height: 300px">
                 <table class="table table-striped">
@@ -48,7 +63,8 @@
             <hr/>
             <form name="contatoForm">
                 <input class="form-control" type="text" ng-model="contato.nome" name="nome" placeholder="Nome" ng-required="true" ng-minlength="10" />
-                <input class="form-control" type="text" ng-model="contato.telefone" name="telefone" placeholder="Telefone" ng-required="true" ng-pattern="/^\d{4,5}-\d{4}$/"/>
+                <input class="form-control" type="text" ng-model="contato.telefone"  maxlength="14" name="telefone" placeholder="Telefone" ng-required="true" ng-pattern="/^\d{4,5}-\d{4}$/" ui-telefone />
+                {{contato.dataContatoJson}}
                 <input class="form-control" type="text" ng-model="contato.dataContatoJson" maxlength="10" name="data" placeholder="Data" ng-required="true" ng-pattern="/^\d{1,2}\/\d{1,2}\/\d{1,4}$/" ui-date />
                 <select class="form-control" ng-model="contato.operadora" ng-options="operadora.operadora_desc for operadora in operadoras">
                     <option value="">Selecione</option>

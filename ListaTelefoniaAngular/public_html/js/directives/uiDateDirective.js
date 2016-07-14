@@ -1,8 +1,11 @@
-app.directive("uiDate", function () {
+app.directive("uiDate", function ($filter) {
     return{
         require: "ngModel",
         link: function (scope, element, attrs, ctrl) {
             var _formatDate = function (date) {
+                if (date.length > 10) {
+                    return date.substring(0, 10);
+                }
                 if (date.length < 8) {
                     date = date.replace(/[^0-9]+/g, '');
                     if (date.length > 2) {
@@ -14,9 +17,19 @@ app.directive("uiDate", function () {
                 }
                 return date;
             };
+
             element.bind("keyup", function () {
                 ctrl.$setViewValue(_formatDate(ctrl.$viewValue));
                 ctrl.$render();
+            });
+
+            ctrl.$parsers.push(function (value) {
+                if (isUndefinedOrNull(value)) {
+                    return value;
+                }
+                if (value.length === 10) {
+                    return formatarData(value);
+                }
             });
         }
     };
