@@ -1,4 +1,4 @@
-app.directive("uiAlert", function(){
+app.directive("uiAlert", function () {
     return{
         templateUrl: 'view/alert.html',
         restrict: 'AE',

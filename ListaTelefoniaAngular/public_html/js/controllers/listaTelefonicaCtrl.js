@@ -2,11 +2,11 @@ app.controller("listaTelefonicaCtrl", function ($scope, contatosAPI, operadorasA
     $scope.app = "Lista Telefonica";
     $scope.contatos = [];
     $scope.operadoras = [];
-    
+
     var carregarContatos = function () {
         contatosAPI.buscarContatos().success(function (data) {
             $scope.contatos = data;
-        }).error(function(data){
+        }).error(function (data) {
             $scope.error = "Não foi possível carregar os dados!";
         });
     };
