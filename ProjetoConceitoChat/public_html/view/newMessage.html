@@ -2,13 +2,93 @@
     <div class="col-md-10 col-xs-10">
         <div class="messages msg_sent" style="height: 70px ">
             <p id="mensagem">#_MENSAGEM_USUARIO_#</p>
-            <p>#_NOME_USUARIO_#</p> • <p id="minutos">00</p> min
+            #_NOME_USUARIO_# • <label>Agora mesmo</label> 
         </div>
     </div>
     <div class="col-md-2 col-xs-2 avatar">
-        <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">
+        <img src="https://i.ytimg.com/vi/PVJXpRXyaCI/hqdefault.jpg" class=" img-responsive "/>
     </div>
+    <input type="hidden" id="txtHidden" />
 </div>
 <script type="text/javascript">
-    ativarMinutos();
+    var #_INTERVALO_# = setInterval(function () {
+        var minutosInteiro = document.getElementById('#_ID_MINUTO_#').innerHTML;
+        var minutos = document.getElementById('#_ID_MINUTO_#');
+        var regexp = /d|h/;
+
+        minutosInteiro = minutosInteiro.replace(/min atrás/, '');
+        if (isNaN(minutosInteiro) && !regexp.test(minutosInteiro)) {
+            minutosInteiro = 0;
+        }
+        var horas = '';
+        var dia = 0;
+        var tempoFormatado = '';
+        var index = 0;
+        if (regexp.test(minutosInteiro)) {
+            var horaArray = [];
+            if (/h/.test(minutosInteiro)) {
+                horaArray = minutosInteiro.split(/h/);
+            }
+            if (/d/g.test(horaArray[0])) {
+                var diaArray = horaArray[0].split(/d/);
+                horaArray.shift();
+                horaArray = diaArray.concat(horaArray);
+                index++;
+                dia = horaArray[0];
+            }
+            horas = horaArray[index];
+            minutosInteiro = parseInt(horaArray[index + 1]);
+        }
+        minutosInteiro++;
+        if (minutosInteiro > 59) {
+            minutosInteiro = 0;
+            horas++;
+        }
+        if (horas.toString().length > 0) {
+            if (horas > 1) {
+//            if (horas > 23) {
+                dia++;
+                horas = 0;
+                dia = dia.toString() + 'd';
+            }
+            if (horas.toString().length < 2) {
+                horas = '0' + horas.toString();
+            }
+            horas = horas.toString() + 'h';
+        }
+
+        if (minutosInteiro.toString().length < 2) {
+            minutosInteiro = '0' + minutosInteiro;
+        }
+        tempoFormatado = horas.toString() + minutosInteiro.toString();
+        if (parseInt(dia.toString().replace(/d/, '')) > 0) {
+            if (!/d/.test(dia)) {
+                dia = dia.toString() + 'd';
+            }
+            minutos.innerHTML = dia.toString() + horas.toString() + minutosInteiro.toString();
+        }
+
+        if (dia === 0) {
+            minutos.innerHTML = tempoFormatado + 'min atrás';
+        }
+        dia = parseInt(dia.toString().replace(/d/, ''));
+        if (dia > 0) {
+            var d = new Date();
+            d.setDate(d.getDate() - dia);
+            var dia = d.getDate();
+            var mes = (parseInt(d.getMonth()) + 1);
+            var ano = d.getFullYear();
+
+            if (dia.toString().length < 2) {
+                dia = '0' + dia.toString();
+            }
+            if (mes.toString().length < 2) {
+                mes = '0' + mes.toString();
+            }
+
+            minutos.innerHTML = dia + '/' + mes + '/' + ano;
+            clearInterval(#_INTERVALO_#);
+        }
+    }, 100);
+//    60000
 </script>
